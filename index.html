@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Калькулятор</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/styles.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-5">Калькулятор</h1>
+      <form id="calc-form" class="mt-4">
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            id="expression"
+            placeholder="Enter expression"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Посчитать</button>
+      </form>
+      <div class="mt-3">
+        <h2>Результат: <span id="result"></span></h2>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#calc-form").on("submit", function (event) {
+          event.preventDefault();
+          let expression = $("#expression").val();
+          $.ajax({
+            url: "/calculate",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ expression: expression }),
+            success: function (response) {
+              $("#result").text(response.result);
+            },
+            error: function (response) {
+              $("#result").text("Error: " + response.responseJSON.error);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
